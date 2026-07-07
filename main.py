@@ -4,7 +4,7 @@ from handlers import info, admin, protection, cleaning
 
 # إعداد البوت
 # ضع التوكن الخاص ببوتك بين علامتي التنصيص بدلاً من النص الموجود
-TOKEN = "ضع_توكن_البوت_هنا"
+TOKEN = "8201679973:AAFa6xGpxL7PxXX3s1QbNEXkMjy5Ah6kvcM"
 
 async def main():
     bot = Bot(token=TOKEN)
