@@ -9,7 +9,7 @@ async def get_user_info(message: Message):
     user = message.reply_to_message.from_user if message.reply_to_message else message.from_user
     rank = get_rank(user.id)
     
-    # تحديد الرتبة الخاصة بك (المطور الأساسي)
+    # ضع آيديك هنا ليظهر كمطور أساسي دائماً
     if user.id == 8183727038: rank = "المطور الأساسي"
     
     info_text = (
