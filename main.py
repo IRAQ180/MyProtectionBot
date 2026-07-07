@@ -1,21 +1,21 @@
 import asyncio
 from aiogram import Bot, Dispatcher
-from handlers import admin, protection
+from handlers import admin, protection, info
 
 # ضع التوكن الخاص بك هنا
-# نصيحة: يفضل مستقبلاً استخدام متغيرات البيئة (Environment Variables)
 TOKEN = "8201679973:AAFa6xGpxL7PxXX3s1QbNEXkMjy5Ah6kvcM"
 
 async def main():
-    # إعداد البوت والـ Dispatcher
+    # إعداد البوت
     bot = Bot(token=TOKEN)
     dp = Dispatcher()
     
-    # تسجيل الـ Routers (هنا يتم ربط ملفاتك)
+    # ربط جميع ملفات الـ Handlers
     dp.include_router(admin.router)
     dp.include_router(protection.router)
+    dp.include_router(info.router)
     
-    print("البوت يعمل الآن ومستعد للحماية...")
+    print("البوت يعمل الآن ومستعد لكل المهام...")
     
     # بدء تشغيل البوت
     await dp.start_polling(bot)
