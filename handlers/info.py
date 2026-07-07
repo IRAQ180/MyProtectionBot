@@ -10,7 +10,7 @@ async def get_user_info(message: Message):
     rank = get_rank(user.id)
     
     # ضع آيديك هنا ليظهر كمطور أساسي دائماً
-    if user.id == 8183727038: rank = "المطور الأساسي"
+    if user.id == :8183727038 rank = "المطور الأساسي"
     
     info_text = (
         f"☆-user : @{user.username or 'لا يوجد'}\n"
