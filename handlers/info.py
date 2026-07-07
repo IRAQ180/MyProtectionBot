@@ -1,29 +1,17 @@
-from aiogram import Router, F
-from aiogram.types import Message
-from database import get_rank
+from aiogram import Bot, Dispatcher
+import asyncio
+# تأكد من إضافة info هنا
+from handlers import admin, cleaning, protection, info 
 
-router = Router()
+async def main():
+    bot = Bot(token="8201679973:AAFa6xGpxL7PxXX3s1QbNEXkMjy5Ah6kvcM") 
+    dp = Dispatcher()
+    
+    # سجل info في الروترات
+    dp.include_routers(admin.router, cleaning.router, protection.router, info.router)
+    
+    print("البوت يعمل الآن بنجاح...")
+    await dp.start_polling(bot)
 
-@router.message(F.text == "ايدي")
-async def get_user_info(message: Message):
-    user = message.reply_to_message.from_user if message.reply_to_message else message.from_user
-    rank = get_rank(user.id)
-    
-    # ضع آيديك هنا ليظهر كمطور أساسي دائماً
-    if user.id == :8183727038 rank = "المطور الأساسي"
-    
-    info_text = (
-        f"☆-user : @{user.username or 'لا يوجد'}\n"
-        f"☆-id : {user.id}\n"
-        f"☆-الاسم : {user.full_name}\n"
-        f"☆-الرتبة : {rank}"
-    )
-    
-    try:
-        photos = await message.bot.get_user_profile_photos(user_id=user.id, limit=1)
-        if photos.total_count > 0:
-            await message.reply_photo(photo=photos.photos[0][-1].file_id, caption=info_text)
-        else:
-            await message.reply(info_text)
-    except:
-        await message.reply(info_text)
+if __name__ == "__main__":
+    asyncio.run(main())
