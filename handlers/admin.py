@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.types import Message
-from database import set_rank, remove_rank, get_rank, get_rank_level
+from database import set_rank, get_rank, get_rank_level
 
 router = Router()
 MY_ID = 8183727038
