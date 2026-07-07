@@ -1,9 +1,3 @@
-from aiogram import Router, F
-from aiogram.types import Message
-from database import get_rank
-
-router = Router()
-
 @router.message(F.text == "ايدي")
 async def get_user_info(message: Message):
     user = message.reply_to_message.from_user if message.reply_to_message else message.from_user
@@ -18,15 +12,14 @@ async def get_user_info(message: Message):
         f"☆-الرتبة : {rank}"
     )
     
-    # محاولة جلب الصورة الشخصية
     try:
+        # جلب صور المستخدم
         photos = await message.bot.get_user_profile_photos(user_id=user.id, limit=1)
         if photos.total_count > 0:
-            # نستخدم الرابط المباشر للصورة
-            photo_file_id = photos.photos[0][0].file_id
-            await message.reply_photo(photo=photo_file_id, caption=info_text)
+            # استخدام [-1] لاختيار أكبر حجم متاح للصورة
+            await message.reply_photo(photo=photos.photos[0][-1].file_id, caption=info_text)
         else:
             await message.reply(info_text)
     except Exception as e:
-        # إذا حدث أي خطأ، نرسل النص فقط
+        # إذا فشل البوت في جلب الصورة لأي سبب، سيرسل النص فقط
         await message.reply(info_text)
