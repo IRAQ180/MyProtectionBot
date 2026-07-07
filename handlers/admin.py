@@ -3,14 +3,16 @@ from aiogram.types import Message
 from database import set_rank, remove_rank, get_rank, get_rank_level
 
 router = Router()
+MY_ID = 8183727038 # آيديك الجديد
 
 @router.message(F.text.startswith("رفع "))
 async def promote(message: Message):
     if not message.reply_to_message: return await message.reply("يرجى الرد على الشخص!")
     
-    # التحقق: لا يرفع إلا المطور (مستوى 7 فما فوق)
-    if get_rank_level(get_rank(message.from_user.id)) < 7:
-        return await message.reply("عذراً، هذا الأمر للمطورين فقط! 🚫")
+    # إذا لم تكن أنت، نتأكد من الرتبة
+    if message.from_user.id != MY_ID:
+        if get_rank_level(get_rank(message.from_user.id)) < 7:
+            return await message.reply("عذراً، هذا الأمر للمطورين فقط! 🚫")
 
     rank = message.text.replace("رفع ", "")
     set_rank(message.reply_to_message.from_user.id, rank)
@@ -20,8 +22,9 @@ async def promote(message: Message):
 async def demote(message: Message):
     if not message.reply_to_message: return await message.reply("يرجى الرد على الشخص!")
     
-    if get_rank_level(get_rank(message.from_user.id)) < 7:
-        return await message.reply("عذراً، هذا الأمر للمطورين فقط! 🚫")
+    if message.from_user.id != MY_ID:
+        if get_rank_level(get_rank(message.from_user.id)) < 7:
+            return await message.reply("عذراً، هذا الأمر للمطورين فقط! 🚫")
 
     remove_rank(message.reply_to_message.from_user.id)
     await message.reply("تم تنزيل العضو إلى رتبة [عضو] بنجاح ⚠️")
