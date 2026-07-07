@@ -18,3 +18,10 @@ def get_rank(user_id):
     cursor.execute('SELECT rank FROM users WHERE user_id = ?', (user_id,))
     result = cursor.fetchone()
     return result[0] if result else "عضو"
+
+def get_rank_level(rank):
+    levels = {
+        "المطور الأساسي": 8, "مطور": 7, "مطور ثانوي": 6, "مالك": 5,
+        "منشئ اساسي": 4, "منشئ": 3, "مدير": 2, "مميز": 1, "عضو": 0
+    }
+    return levels.get(rank, 0)
