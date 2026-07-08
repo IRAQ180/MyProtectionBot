@@ -1,11 +1,17 @@
+import os
+import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-import asyncio
 from handlers import admin, protection, info, reply, add_reply, dev
 
 async def main():
-    # ضع التوكن الخاص ببوتك هنا
-    bot = Bot(token="8201679973:AAFa6xGpxL7PxXX3s1QbNEXkMjy5Ah6kvcM") 
+    # قراءة التوكن من المتغيرات في Railway
+    token = os.getenv("BOT_TOKEN")
+    if not token:
+        print("خطأ: لم يتم العثور على BOT_TOKEN في المتغيرات!")
+        return
+
+    bot = Bot(token=token)
     
     # إعداد التخزين المؤقت للمحادثات
     storage = MemoryStorage()
@@ -23,8 +29,7 @@ async def main():
     
     print("البوت يعمل الآن بكامل الميزات...")
     
-    # الحل الجذري لمشكلة ConflictError: 
-    # مسح الـ Webhook القديم وإلغاء أي جلسة معلقة في سيرفرات تليجرام
+    # مسح أي تواصل معلق مع تليجرام عند البدء
     await bot.delete_webhook(drop_pending_updates=True)
     
     # تشغيل البوت
