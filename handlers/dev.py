@@ -1,22 +1,21 @@
-from aiogram import Router, F
+from aiogram import Router, types
+from aiogram.filters import Command
 from aiogram.types import Message
-from database import set_dev_id, get_dev_id
 
+# إنشاء الروتر
 router = Router()
 
-# أمر عرض المطور
-@router.message(F.text == "المطور")
-async def show_dev(message: Message):
-    dev_id = get_dev_id()
-    if not dev_id:
-        return await message.reply("⚠️ لم يتم تعيين مطور بعد.")
+# أمر تجريبي للمطور
+@router.message(Command("dev"))
+async def dev_command(message: Message):
+    # استخدام message.bot بدلاً من تعريف التوكن يدوياً
+    # هذا يضمن أن البوت يستخدم الاتصال الحالي الموجود في main.py
+    bot = message.bot
     
-    await message.reply(f"👨‍💻 **المطور الحالي:** [اضغط هنا للتواصل](tg://user?id={dev_id})")
+    # مثال: إرسال رد يؤكد أن الأوامر تعمل
+    await message.answer("✅ أوامر المطور تعمل بنجاح!")
 
-# أمر تغيير المطور (فقط لك بصفتك المطور الأساسي أو الأدمن)
-@router.message(F.text.startswith("تغيير المطور "))
-async def change_dev(message: Message):
-    # هنا يمكنك إضافة شرط (مثل: إذا كان آيديك هو X فقط يمكنه التغيير)
-    new_id = message.text.split(" ")[2]
-    set_dev_id(new_id)
-    await message.reply(f"✅ تم تغيير المطور بنجاح إلى: {new_id}")
+# يمكنك إضافة المزيد من الأوامر هنا بنفس الطريقة
+# @router.message(Command("status"))
+# async def status_command(message: Message):
+#     await message.answer("البوت يعمل بشكل ممتاز على Railway!")
