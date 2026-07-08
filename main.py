@@ -7,7 +7,7 @@ async def main():
     bot = Bot(token="8201679973:AAFa6xGpxL7PxXX3s1QbNEXkMjy5Ah6kvcM") 
     dp = Dispatcher()
     
-    # تسجيل جميع الروترات بترتيبها الصحيح
+    # تسجيل جميع الروترات لضمان عمل كافة الملفات
     dp.include_routers(
         admin.router, 
         protection.router, 
@@ -16,7 +16,7 @@ async def main():
         add_reply.router
     )
     
-    print("البوت يعمل الآن ومستعد لاستقبال الأوامر...")
+    print("تم تشغيل البوت بنجاح، جاري الاتصال بتليجرام...")
     
     # حذف التحديثات القديمة عند بدء التشغيل
     await bot.delete_webhook(drop_pending_updates=True)
