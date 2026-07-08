@@ -2,40 +2,33 @@ import os
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-# استيراد جميع الهاندلرز الخاصة بك
+# استيراد الروترات
 from handlers import admin, protection, info, reply, add_reply, dev
 
 async def main():
-    # جلب التوكن من المتغيرات في Railway
     token = os.getenv("BOT_TOKEN")
     if not token:
         print("خطأ: لم يتم العثور على BOT_TOKEN في المتغيرات!")
         return
 
-    # إنشاء كائن البوت
     bot = Bot(token=token)
-    
-    # إعداد التخزين
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
     
-    # تسجيل جميع الروترات
+    # تم وضع dev.router في أول القائمة ليأخذ الأولوية
     dp.include_routers(
+        dev.router,
         admin.router, 
         protection.router, 
         info.router, 
         add_reply.router,
-        reply.router,
-        dev.router
+        reply.router
     )
     
     print("--- البوت يعمل الآن وبانتظار الأوامر ---")
-    print("تم تسجيل الروترات بنجاح، بما فيها روتر المطور.")
     
-    # تنظيف الأوامر المعلقة
     await bot.delete_webhook(drop_pending_updates=True)
     
-    # تشغيل البوت
     try:
         await dp.start_polling(bot)
     finally:
