@@ -1,24 +1,24 @@
 from aiogram import Bot, Dispatcher
 import asyncio
-from handlers import admin, protection, info, reply
+from handlers import admin, protection, info, reply, add_reply
 
-# دالة التشغيل الرئيسية
 async def main():
     # ضع التوكن الخاص ببوتك هنا
     bot = Bot(token="8201679973:AAFa6xGpxL7PxXX3s1QbNEXkMjy5Ah6kvcM") 
     dp = Dispatcher()
     
-    # تسجيل جميع الروترات (تأكد أن كل الروترات التي أنشأتها موجودة هنا)
+    # تسجيل جميع الروترات بترتيبها الصحيح
     dp.include_routers(
         admin.router, 
         protection.router, 
         info.router, 
-        reply.router
+        reply.router, 
+        add_reply.router
     )
     
-    print("تم تشغيل البوت بنجاح...")
+    print("البوت يعمل الآن ومستعد لاستقبال الأوامر...")
     
-    # حذف التحديثات القديمة عند بدء التشغيل (اختياري)
+    # حذف التحديثات القديمة عند بدء التشغيل
     await bot.delete_webhook(drop_pending_updates=True)
     
     # تشغيل البوت
