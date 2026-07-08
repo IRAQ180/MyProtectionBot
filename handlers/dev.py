@@ -1,28 +1,32 @@
-from aiogram import Router, types, F
+from aiogram import Router, F
 from aiogram.types import Message
+from aiogram.filters import Command
 
+# إنشاء الروتر
 router = Router()
 
-# نستخدم .contains لكي يستجيب البوت إذا أرسلت كلمة "المطور" فقط أو حتى جملة فيها الكلمة
-@router.message(F.text.contains("المطور"))
+# هذا الهاندلر يستجيب حصراً للكلمة "المطور"
+@router.message(F.text == "المطور")
 async def dev_info(message: Message):
     user = message.from_user
     
-    # محاولة جلب الصورة
-    try:
-        photos = await message.bot.get_user_profile_photos(user_id=user.id, limit=1)
-        
-        text = (
-            f"👤 المطور: {user.full_name}\n"
-            f"🆔 الآيدي: `{user.id}`\n"
-            f"🏷 اليوزر: @{user.username if user.username else 'لا يوجد'}"
-        )
+    # جلب صورة البروفايل
+    photos = await message.bot.get_user_profile_photos(user_id=user.id, limit=1)
+    
+    text = (
+        f"👤 المطور: {user.full_name}\n"
+        f"🆔 الآيدي: `{user.id}`\n"
+        f"🏷 اليوزر: @{user.username if user.username else 'لا يوجد'}"
+    )
 
-        if photos.total_count > 0:
-            photo_file_id = photos.photos[0][-1].file_id
-            await message.answer_photo(photo=photo_file_id, caption=text, parse_mode="Markdown")
-        else:
-            await message.answer(text, parse_mode="Markdown")
-            
-    except Exception as e:
-        await message.answer(f"حدث خطأ أثناء جلب المعلومات: {e}")
+    # إرسال الصورة إذا توفرت
+    if photos.total_count > 0:
+        photo_file_id = photos.photos[0][-1].file_id
+        await message.answer_photo(photo=photo_file_id, caption=text, parse_mode="Markdown")
+    else:
+        await message.answer(text, parse_mode="Markdown")
+
+# هذا الهاندلر إضافي (اختياري) يستجيب لأمر /dev للتأكد من أن الروتر يعمل
+@router.message(Command("dev"))
+async def dev_command_test(message: Message):
+    await message.answer("✅ روتر المطور يعمل بنجاح!")
