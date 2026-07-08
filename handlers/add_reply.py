@@ -6,14 +6,11 @@ router = Router()
 
 @router.message(F.text.startswith("اضف رد "))
 async def save_new_reply(message: Message):
-    # نأخذ النص بعد كلمة "اضف رد "
-    text = message.text.replace("اضف رد ", "").split(maxsplit=1)
-    
-    if len(text) < 2:
+    # تقسيم النص إلى الكلمة والرد
+    parts = message.text.split(" ", 2)
+    if len(parts) < 3:
         return await message.reply("⚠️ صيغة خاطئة! استخدم:\nاضف رد [الكلمة] [الرد]")
     
-    key, value = text[0], text[1]
-    
-    # حفظ في قاعدة البيانات
+    key, value = parts[1], parts[2]
     add_reply(key, value)
-    await message.reply(f"✅ تم حفظ الرد:\nعندما يكتب أحد: {key}\nسأرد بـ: {value}")
+    await message.reply(f"✅ تم الحفظ:\nعندما يكتب أحد: {key}\nسأرد بـ: {value}")
