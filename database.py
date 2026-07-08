@@ -1,22 +1,26 @@
 import sqlite3
-conn = sqlite3.connect('ranks.db', check_same_thread=False)
+
+# الاتصال بقاعدة البيانات
+conn = sqlite3.connect("bot_database.db", check_same_thread=False)
 cursor = conn.cursor()
-cursor.execute('CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY, rank TEXT)')
+
+# إنشاء الجداول الأساسية (إذا لم تكن موجودة)
+cursor.execute("CREATE TABLE IF NOT EXISTS ranks (user_id INTEGER PRIMARY KEY, rank TEXT)")
+cursor.execute("CREATE TABLE IF NOT EXISTS replies (key TEXT PRIMARY KEY, value TEXT)")
 conn.commit()
 
-def set_rank(user_id, rank):
-    cursor.execute('INSERT OR REPLACE INTO users (user_id, rank) VALUES (?, ?)', (user_id, rank))
-    conn.commit()
-
-def remove_rank(user_id):
-    cursor.execute('DELETE FROM users WHERE user_id = ?', (user_id,))
-    conn.commit()
-
+# دالة لجلب الرتبة
 def get_rank(user_id):
-    cursor.execute('SELECT rank FROM users WHERE user_id = ?', (user_id,))
+    cursor.execute("SELECT rank FROM ranks WHERE user_id = ?", (user_id,))
     result = cursor.fetchone()
     return result[0] if result else "عضو"
 
-def get_rank_level(rank):
-    levels = {"المطور الأساسي": 8, "مطور": 7, "مطور ثانوي": 6, "مالك": 5, "منشئ اساسي": 4, "منشئ": 3, "مدير": 2, "مميز": 1, "عضو": 0}
-    return levels.get(rank, 0)
+# دوال الردود الجديدة التي تحتاجها
+def add_reply(key, value):
+    cursor.execute("INSERT OR REPLACE INTO replies (key, value) VALUES (?, ?)", (key, value))
+    conn.commit()
+
+def get_reply(key):
+    cursor.execute("SELECT value FROM replies WHERE key = ?", (key,))
+    result = cursor.fetchone()
+    return result[0] if result else None
