@@ -27,12 +27,22 @@ def get_rank_level(rank):
     levels = {"عضو": 1, "مشرف": 2, "ادمن": 3, "المطور الأساسي": 4}
     return levels.get(rank, 0)
 
-# --- دوال الردود ---
+# --- دوال الردود التلقائية ---
 def add_reply(key, value):
     cursor.execute("INSERT OR REPLACE INTO replies (key, value) VALUES (?, ?)", (key, value))
     conn.commit()
 
 def get_reply(key):
     cursor.execute("SELECT value FROM replies WHERE key = ?", (key,))
+    result = cursor.fetchone()
+    return result[0] if result else None
+
+# --- دوال إدارة المطور (الميزات الجديدة) ---
+def set_dev_id(user_id):
+    cursor.execute("INSERT OR REPLACE INTO replies (key, value) VALUES (?, ?)", ("dev_id", str(user_id)))
+    conn.commit()
+
+def get_dev_id():
+    cursor.execute("SELECT value FROM replies WHERE key = ?", ("dev_id",))
     result = cursor.fetchone()
     return result[0] if result else None
