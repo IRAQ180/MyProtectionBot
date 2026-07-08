@@ -2,11 +2,11 @@ import os
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-# استيراد الهاندلرز الخاصة بك
+# استيراد الروترات من مجلد handlers
 from handlers import admin, protection, info, reply, add_reply, dev
 
 async def main():
-    # قراءة التوكن بأمان من متغيرات Railway
+    # جلب التوكن من المتغيرات في Railway (تأكد أنك أضفته في Variables)
     token = os.getenv("BOT_TOKEN")
     if not token:
         print("خطأ: لم يتم العثور على BOT_TOKEN في المتغيرات!")
@@ -15,11 +15,11 @@ async def main():
     # إنشاء كائن البوت
     bot = Bot(token=token)
     
-    # إعداد التخزين المؤقت للمحادثات
+    # إعداد التخزين المؤقت
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
     
-    # تسجيل جميع الملفات (الروترات)
+    # تسجيل الروترات (تأكد أن dev موجود هنا)
     dp.include_routers(
         admin.router, 
         protection.router, 
@@ -31,7 +31,7 @@ async def main():
     
     print("البوت يعمل الآن بكامل الميزات...")
     
-    # مسح أي تواصل معلق مع تليجرام عند البدء (حل مشكلة ConflictError)
+    # تنظيف الأوامر المعلقة
     await bot.delete_webhook(drop_pending_updates=True)
     
     # تشغيل البوت
