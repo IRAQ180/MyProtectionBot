@@ -1,21 +1,30 @@
-from aiogram import Router, types
-from aiogram.filters import Command
+from aiogram import Router, types, F
 from aiogram.types import Message
 
 # إنشاء الروتر
 router = Router()
 
-# أمر تجريبي للمطور
-@router.message(Command("dev"))
-async def dev_command(message: Message):
-    # استخدام message.bot بدلاً من تعريف التوكن يدوياً
-    # هذا يضمن أن البوت يستخدم الاتصال الحالي الموجود في main.py
-    bot = message.bot
+# أمر "المطور" لجلب المعلومات والصورة
+@router.message(F.text == "المطور")
+async def dev_info(message: Message):
+    # 1. الحصول على معلومات المستخدم (المطور)
+    user = message.from_user
     
-    # مثال: إرسال رد يؤكد أن الأوامر تعمل
-    await message.answer("✅ أوامر المطور تعمل بنجاح!")
+    # 2. الحصول على صور البروفايل (أول صورة فقط)
+    photos = await message.bot.get_user_profile_photos(user_id=user.id, limit=1)
+    
+    # تنسيق المعلومات
+    text = (
+        f"👤 المطور: {user.full_name}\n"
+        f"🆔 الآيدي: `{user.id}`\n"
+        f"🏷 اليوزر: @{user.username if user.username else 'لا يوجد'}"
+    )
 
-# يمكنك إضافة المزيد من الأوامر هنا بنفس الطريقة
-# @router.message(Command("status"))
-# async def status_command(message: Message):
-#     await message.answer("البوت يعمل بشكل ممتاز على Railway!")
+    # 3. التحقق من وجود صورة وإرسالها
+    if photos.total_count > 0:
+        # جلب الـ file_id لأكبر حجم من الصورة الأولى
+        photo_file_id = photos.photos[0][-1].file_id
+        await message.answer_photo(photo=photo_file_id, caption=text, parse_mode="Markdown")
+    else:
+        # إذا لم يجد صورة، يرسل النص فقط
+        await message.answer(text, parse_mode="Markdown")
