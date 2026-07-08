@@ -1,1 +1,1 @@
-from . import admin, protection, info
+from . import admin, cleaning, protection, info
